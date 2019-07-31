@@ -1,0 +1,113 @@
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<style>
+td{
+  border: 1px solid #000;
+  width: 100px;
+  height: 100px;
+}
+.red{
+  background-color:red;
+}
+.blue{
+  background-color: blue;
+}
+</style>
+<table>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+<input type="button" value="開始遊戲" id="start">
+<p id="score">0</p>
+<p>剩餘時間: <span id="timeleft">60</span> 秒</p>
+<script>
+  // 開始按鈕
+  let start = document.getElementById("start");
+  // 分數
+  let score = 0; 
+  let scoreText = document.getElementById("score");
+  // 所有td
+  let tds = document.getElementsByTagName("td");
+  // 每秒換格子的計時器
+  let timer = 0; //tips:將timer=0 clearInterval不會清掉這個
+  // 遊戲時間計時器
+  let gameTimer = 0;
+  // 剩餘時間文字
+  let timeleft = document.getElementById("timeleft");
+  // 遊戲時間
+  let time = 60;
+
+  // 當點擊開始按鈕時
+  start.onclick = function(){
+    // 執行計時器
+    timer = setInterval(game, 1000);
+    // 立刻換格子
+    game();
+    // 將開始按鈕停用
+    start.setAttribute("disabled", "true");
+    // 開始倒數遊戲時間
+    gameTimer = setInterval(gametime, 1000);
+  }
+
+// 時間
+  function gametime(){
+  time--;
+  timeleft.innerText = time;
+  if(time == 0){
+    // 停止遊戲倒數
+    clearInterval(gameTimer);
+    // 停止換格子
+    clearInterval(timer); 
+    alert(`時間到，你獲得了${score}分`);
+    // 重置所有格子
+    for(let i=0;i<tds.length;i++){
+      tds[i].classList.remove("red");
+      tds[i].classList.remove("blue");
+    }
+    time = 60;
+    score = 0;
+    // 將開始按鈕啟用
+    start.removeAttribute("disabled");
+    // 改回時間文字
+    timeleft.innerText = 60;
+    // 改回分數文字
+    scoreText.innerText = 0;   
+  }
+}
+
+ // 換格子
+  function game(){
+    for(let i=0;i<tds.length;i++){
+      tds[i].classList.remove("red");
+      tds[i].classList.remove("blue");
+    }
+    for(let i=0;i<3;i++){
+      let rand = Math.floor( Math.random()*9 );
+      tds[rand].classList.add("red");
+    }
+  }
+
+  // 點格子時
+  for(let i=0;i<tds.length;i++){
+    tds[i].onclick = function(){
+      if( this.classList.contains("red") ){
+          this.classList.remove("red");
+          this.classList.add("blue");
+          score++;
+          scoreText.innerText = score;
+      }
+    }
+  }
+</script>
